@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+  mysql:
+    image: mysql:8.0.16
+    environment:
+      - MYSQL_ROOT_PASSWORD=localdev
+    ports:
+      - 3306:3306
+    volumes:
+      - rh-mysql-data:/var/lib/mysql
+    networks:
+      rh-local-network:
+        aliases:
+          - rh-local-mysql
+    container_name: rh-local-mysql
+
+  redis:
+    image: "redis:latest"
+    command: redis-server --requirepass localdev
+    ports:
+      - "6379:6379"
+    networks:
+      rh-local-network:
+        aliases:
+          - rh-local-redis
+    container_name: rh-local-redis
+
+networks:
+  rh-local-network:
+    name: rh-local-network
+
+volumes:
+  rh-mysql-data:
+
