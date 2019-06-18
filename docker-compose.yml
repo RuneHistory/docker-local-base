@@ -26,10 +26,35 @@ services:
           - rh-local-redis
     container_name: rh-local-redis
 
+  zookeeper:
+    image: "wurstmeister/zookeeper"
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: "wurstmeister/kafka:2.12-2.2.1"
+    ports:
+      - "9092"
+    volumes:
+      - rh-kafka-data:/kafka
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=rh-local-kafka
+      - KAFKA_ADVERTISED_PORT=9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CREATE_TOPICS="queue.account.new,queue.highscore.new"
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+    networks:
+      rh-local-network:
+        aliases:
+          - rh-local-kafka
+    container_name: rh-local-kafka
+
 networks:
   rh-local-network:
     name: rh-local-network
 
 volumes:
   rh-mysql-data:
+  rh-kafka-data:
 
